@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Net;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace VisitorCounter.Controllers
 {
@@ -12,6 +14,9 @@ namespace VisitorCounter.Controllers
     {
         public ActionResult Index()
         {
+            HttpClient client = new HttpClient();
+            String response = client.GetStringAsync("https://az3tnb2cq2.execute-api.us-east-1.amazonaws.com/Prod/api/values").Result;
+            ViewData["LuckyNumbers"] = response;
             if (Session["user"] != null)
             {
                 return Redirect("/chat");
@@ -19,10 +24,10 @@ namespace VisitorCounter.Controllers
             var views = (int)(Session["ViewCount"] ?? 0) + 1;
             Session["ViewCount"] = views;
             ViewData["Message"] = views;
-            WebRequest request = WebRequest.Create("https://az3tnb2cq2.execute-api.us-east-1.amazonaws.com/Prod/api/values");
-            WebResponse response = request.GetResponse();
+            //WebRequest request = WebRequest.Create("https://az3tnb2cq2.execute-api.us-east-1.amazonaws.com/Prod/api/values");
+            //WebResponse response = request.GetResponse();
             //Stream dataStream = response.GetResponseStream();
-            using (Stream dataStream = response.GetResponseStream())
+            /*using (Stream dataStream = response.GetResponseStream())
             {
                 // Open the stream using a StreamReader for easy access.  
                 StreamReader reader = new StreamReader(dataStream);
@@ -31,7 +36,7 @@ namespace VisitorCounter.Controllers
                 // Display the content.  
                 ViewData["LuckyNumbers"] = responseFromServer;
             }
-            response.Close();
+            response.Close();*/
             
             return View();
         }
