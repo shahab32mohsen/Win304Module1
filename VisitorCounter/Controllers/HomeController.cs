@@ -14,32 +14,24 @@ namespace VisitorCounter.Controllers
     {
         public ActionResult Index()
         {
+            
+
+            return View();
+        }
+
+        public ActionResult GetMessage()
+        {
             HttpClient client = new HttpClient();
             String response = client.GetStringAsync("https://az3tnb2cq2.execute-api.us-east-1.amazonaws.com/Prod/api/values").Result;
             ViewData["LuckyNumbers"] = response;
-            if (Session["user"] != null)
-            {
-                return Redirect("/chat");
-            }
+
             var views = (int)(Session["ViewCount"] ?? 0) + 1;
             Session["ViewCount"] = views;
             ViewData["Message"] = views;
-            //WebRequest request = WebRequest.Create("https://az3tnb2cq2.execute-api.us-east-1.amazonaws.com/Prod/api/values");
-            //WebResponse response = request.GetResponse();
-            //Stream dataStream = response.GetResponseStream();
-            /*using (Stream dataStream = response.GetResponseStream())
-            {
-                // Open the stream using a StreamReader for easy access.  
-                StreamReader reader = new StreamReader(dataStream);
-                // Read the content.  
-                string responseFromServer = reader.ReadToEnd();
-                // Display the content.  
-                ViewData["LuckyNumbers"] = responseFromServer;
-            }
-            response.Close();*/
-            
-            return View();
+            String message = "Your connection token for today is:<b> " + response.Replace(" ","") + " </b>and you have retrieved a token <b>" + views + "</b> time(s) during this session";
+            return new JsonResult { Data = message, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
+         
 
         public ActionResult About()
         {
